@@ -10,6 +10,9 @@ SESSION_ID = 'me'
 
 #text_to_be_analyzed = "how does covid spread?"
 
+welcome_message = '''Hello! I am a covid bot. I can answer questions related to covid. 
+You can ask me questions regarding the symptoms, precautions and other general information on covid'''
+
 app = Flask(__name__,
             template_folder='client/templates',
             static_folder='client/static')
@@ -29,7 +32,7 @@ def get_response(text_to_be_analyzed):
 
 @app.route('/')
 def index():
-    return render_template('chat.html')
+    return render_template('chat.html', message=welcome_message)
 
 
 @app.route('/get_reply', methods=["POST"])

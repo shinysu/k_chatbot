@@ -58,18 +58,19 @@ body {
   margin-bottom: 3px;
 }
 
-.usermessage{
-  background-color: #ffffff;
+.botmessage{
+  background-color: #ee7b17;
   vertical-align: middle;
   padding: 0.5vh;
   font-family: "Helvetica";
   border-radius: 20px;
   resize: both;
   width:80%;
+  color: #ffffff;
 }
 
-.botmessage{
-  background-color: #ee7b17;
+.usermessage{
+  background-color: #ffffff;
   width: 80%;
   margin-left: 20%;
   height: auto;
@@ -78,7 +79,7 @@ body {
   border-radius: 20px;
   overflow: hidden;
   padding: 0.5vh;
-  color: #ffffff;
+
 }
 
 .bottom_wrapper {
