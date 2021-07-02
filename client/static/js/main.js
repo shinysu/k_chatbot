@@ -17,6 +17,7 @@ Message = function (arg) {
 		return this;
 };
 
+
 function send_message(start = false)
     {
       query = {"text":$("#msg_input").val()};

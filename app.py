@@ -8,7 +8,7 @@ DIALOGFLOW_PROJECT_ID = 'newagent-jojg'
 DIALOGFLOW_LANGUAGE_CODE = 'en'
 SESSION_ID = 'me'
 
-text_to_be_analyzed = "how does covid spread?"
+#text_to_be_analyzed = "how does covid spread?"
 
 app = Flask(__name__,
             template_folder='client/templates',

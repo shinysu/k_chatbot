@@ -8,10 +8,8 @@ body {
 }
 
 .chat_window {
-  /* position: absolute; */
   width: 98%;
   max-width: 800px;
-  /* max-height: 660px; */
   height: 98%;
   border-radius: 10px;
   background-color: #fff;
