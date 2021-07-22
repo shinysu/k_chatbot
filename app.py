@@ -1,7 +1,8 @@
 import os
 from google.api_core.exceptions import InvalidArgument
-import dialogflow_v2beta1
+import dialogflow
 from flask import Flask, render_template, request, jsonify
+from file_ops import write_fallback_csv
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = 'private_key.json'
 DIALOGFLOW_PROJECT_ID = 'newagent-jojg'
@@ -19,12 +20,15 @@ app = Flask(__name__,
 
 
 def get_response(text_to_be_analyzed):
-    session_client = dialogflow_v2beta1.SessionsClient()
+    session_client = dialogflow.SessionsClient()
     session = session_client.session_path(DIALOGFLOW_PROJECT_ID, SESSION_ID)
-    text_input = dialogflow_v2beta1.types.TextInput(text=text_to_be_analyzed, language_code=DIALOGFLOW_LANGUAGE_CODE)
-    query_input = dialogflow_v2beta1.types.QueryInput(text=text_input)
+    text_input = dialogflow.types.TextInput(text=text_to_be_analyzed, language_code=DIALOGFLOW_LANGUAGE_CODE)
+    query_input = dialogflow.types.QueryInput(text=text_input)
     try:
         response = session_client.detect_intent(session=session, query_input=query_input)
+        if response.query_result.intent.display_name == "Default Fallback Intent":
+            write_fallback_csv(text_to_be_analyzed)
+
         return response.query_result.fulfillment_text
     except InvalidArgument:
         raise
@@ -39,14 +43,8 @@ def index():
 def get_reply():
     text = request.form["text"]
     reply = get_response(text)
-    print(reply)
     return jsonify({'text': reply})
 
 
-'''print("Query text:", response.query_result.query_text)
-print("Detected intent:", response.query_result.intent.display_name)
-print("Detected intent confidence:", response.query_result.intent_detection_confidence)
-print("Fulfillment text:", response.query_result.fulfillment_text)'''
-
 if __name__ == '__main__':
-    app.run(debug=True, port=3001)
+    app.run(debug=True, port=3002)
