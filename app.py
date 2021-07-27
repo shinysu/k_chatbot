@@ -2,6 +2,8 @@ import os
 from google.api_core.exceptions import InvalidArgument
 import dialogflow
 from flask import Flask, render_template, request, jsonify
+from google.api_core.gapic_v1 import method
+from db_utils import insert_conversations, get_conversations, get_conversations_by_date, get_misses_by_date, get_misses
 from file_ops import write_fallback_csv
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = 'private_key.json'
@@ -26,8 +28,9 @@ def get_response(text_to_be_analyzed):
     query_input = dialogflow.types.QueryInput(text=text_input)
     try:
         response = session_client.detect_intent(session=session, query_input=query_input)
-        if response.query_result.intent.display_name == "Default Fallback Intent":
-            write_fallback_csv(text_to_be_analyzed)
+        insert_conversations(text_to_be_analyzed, response.query_result.intent.display_name)
+        '''if response.query_result.intent.display_name == "Default Fallback Intent":
+            write_fallback_csv(text_to_be_analyzed)'''
 
         return response.query_result.fulfillment_text
     except InvalidArgument:
@@ -46,5 +49,27 @@ def get_reply():
     return jsonify({'text': reply})
 
 
+@app.route('/conversations', methods=["GET", "POST"])
+def conversations():
+    if request.method == 'GET':
+        messages = get_conversations()
+        return render_template('conversations.html', messages=messages)
+    elif request.method == 'POST':
+        from_date = request.form['fromdate']
+        to_date = request.form['todate']
+        messages = get_conversations_by_date(from_date, to_date)
+        return render_template('conversations.html', messages=messages)
+
+@app.route('/misses', methods=["GET", "POST"])
+def misses():
+    if request.method == 'GET':
+        messages = get_misses()
+        return render_template('misses.html', messages=messages)
+    elif request.method == 'POST':
+        from_date = request.form['fromdate']
+        to_date = request.form['todate']
+        messages = get_misses_by_date(from_date, to_date)
+        return render_template('misses.html', messages=messages)
+
 if __name__ == '__main__':
-    app.run(debug=True, port=3002)
+    app.run(debug=True, port=3001)
