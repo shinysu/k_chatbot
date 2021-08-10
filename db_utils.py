@@ -46,7 +46,7 @@ def get_conversations():
 
 
 def get_conversations_by_date(from_date, to_date):
-    sql_query = """select input_text, intent from conversations where create_dt >= %s and create_dt <= %s"""
+    sql_query = """select input_text, intent from conversations where DATE(create_dt) >= %s and DATE(create_dt) <= %s"""
     return run_query(sql_query, [from_date, to_date])
 
 def get_misses():
@@ -56,9 +56,9 @@ def get_misses():
 
 
 def get_misses_by_date(from_date, to_date):
-    sql_query = """select input_text, intent from conversations where intent='Default Fallback Intent' and create_dt >= %s and create_dt <= %s"""
+    sql_query = """select input_text, intent from conversations where intent='Default Fallback Intent' and DATE(create_dt) >= %s and DATE(create_dt) <= %s"""
     return run_query(sql_query, [from_date, to_date])
 
 if __name__ == '__main__':
     #insert_conversations('how does covid spread', 'Default Fallback Intent')
-    get_conversations()
+    get_misses_by_date('2021-08-10', '2021-08-10')
